@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Orchid;
 
+use App\Models\Order;
 use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemPermission;
 use Orchid\Platform\OrchidServiceProvider;
@@ -33,16 +34,25 @@ class PlatformProvider extends OrchidServiceProvider
      */
     public function menu(): array
     {
+        
         return [
             Menu::make('Статистика')
                 ->icon('bs.info-lg')
                 ->title('Навигация')
                 ->route(config('platform.index')),
 
+            Menu::make('Заказы')
+                ->icon('bs.list-check')
+                ->route('platform.orders')
+                ->badge(function () {
+
+                $orders = Order::where('status', 0)->count();
+                return $orders;
+            }),
+
             Menu::make('Товары')
                 ->icon('bs.bag')
-                ->route('platform.shop')
-                ->badge(fn () => 6),
+                ->route('platform.shop'),
 
             Menu::make('Категории')
                 ->icon('bs.tag')

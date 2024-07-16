@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Shop;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -76,48 +80,143 @@ class CartController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function add(Request $request)
     {
-        //
+        $cart = Cart::where('id_user', Auth::user()->id)
+            ->where('id_product', $request->id)
+            ->first();
+
+        if($cart){
+            $cart->amount += 1;
+            $cart->save();
+        } else {
+            $newCart = new Cart();
+            $newCart->id_user = Auth::user()->id;
+            $newCart->id_product = $request->id;
+            $newCart->amount = 1;
+
+            $newCart->save();
+        }
+
+        return back()->with('success', 'ok');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function increment(Request $request){
+        $cart = Cart::where('id_user', Auth::user()->id)
+            ->where('id_product', $request->id)
+            ->first();
+
+            if($cart){
+                $cart->amount += 1;
+                $cart->save();
+            }
+
+        return back()->with('success', 'ok');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cart $cart)
-    {
-        //
+    public function decrement(Request $request){
+        $cart = Cart::where('id_user', Auth::user()->id)
+            ->where('id_product', $request->id)
+            ->first();
+    
+        if($cart){
+            $cart->amount -= 1;
+            if($cart->amount == 0){
+                $cart->delete();
+            } else {
+                $cart->save();
+            }
+        }
+    
+        return back()->with('success', 'ok');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cart $cart)
-    {
-        //
+    public function delete(Request $request){
+        $cart = Cart::where('id_user', Auth::user()->id)
+            ->where('id_product', $request->id)
+            ->first();
+    
+        if($cart){
+            $cart->delete();
+        }
+    
+        return back()->with('success', 'ok');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Cart $cart)
-    {
-        //
+    public function checkout(Request $request){
+        $rules = 0;
+
+        if(auth()->user()->getRoles()->where('slug', 'admin')->count() > 0){
+            $rules = 1;
+        } elseif(auth()->user()->getRoles()->where('slug','graduate')->count() > 0){
+            $rules = 1;
+        } else {
+            $rules = 0;
+        }
+
+        $sum = $this->calculateSum(Auth::user()->id, $rules);
+        $discount = $this->calculateDiscount(Auth::user()->id, $rules);
+
+        return view('checkout', [
+            'cart' => Cart::where('id_user', Auth::user()->id)->get(),
+            'sum' => $sum,
+            'discount' => $discount,
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Cart $cart)
-    {
-        //
+    public function emptyCart($id){
+        $cart = Cart::where('id_user', $id);
+        $cart->delete();
+    }
+
+    public function makeorder(Request $request){
+        $rules = 0;
+
+        if(auth()->user()->getRoles()->where('slug', 'admin')->count() > 0){
+            $rules = 1;
+        } elseif(auth()->user()->getRoles()->where('slug','graduate')->count() > 0){
+            $rules = 1;
+        } else {
+            $rules = 0;
+        }
+
+        $sum = $this->calculateSum(Auth::user()->id, $rules);
+        $discount = $this->calculateDiscount(Auth::user()->id, $rules);
+
+        $result_sum = $sum - $discount;
+
+        $newOrder = new Order();
+        $newOrder->user_id = Auth::user()->id;
+        $newOrder->type_delivery = $request->delivery;
+        $newOrder->type_payment = $request->payment;
+        $newOrder->fio = $request->fio;
+        $newOrder->adress = $request->adress;
+        $newOrder->tel = $request->tel;
+        $newOrder->email = $request->email;
+        $newOrder->vk = $request->vk;
+        $newOrder->price = $result_sum;
+
+        $newOrder->save();
+
+        $cart = Cart::where('id_user', Auth::user()->id)->get();
+
+        foreach($cart as $item){
+            $newOrderDetail = new OrderDetail();
+            $newOrderDetail->order_id = $newOrder->id;
+            $newOrderDetail->product_id = $item->product->id;
+            $newOrderDetail->amount = $item->amount;
+    
+            $newOrderDetail->save();
+
+            $decrementAmountProduct = Shop::where('id', $item->product->id)->first();
+            $decrementAmountProduct->amount -= $item->amount;
+            $decrementAmountProduct->save();
+    
+            $newOrderDetail->save();
+        }
+
+        $this->emptyCart(Auth::user()->id);
+
+        return redirect()->route('/cart')->with('information','created');
     }
 }

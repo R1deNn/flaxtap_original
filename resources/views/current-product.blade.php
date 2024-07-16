@@ -1,3 +1,4 @@
+@section('title', $product->title)
 <x-guest-layout>
           <section class="container flex-grow mx-auto max-w-[1200px] border-b py-5 lg:grid lg:grid-cols-2 lg:py-10">
             <div class="container mx-auto px-4">
@@ -59,15 +60,22 @@
                 Категория: <span class="font-normal">{{$product->category->title}}</span>
               </p>
 
-              @if (auth()->user()->getRoles()->where('slug', 'graduate')->count() > 0)
-                <p class="mt-4 text-2xl font-bold text-red-600">
-                  <span class='text-[#5e5e5e] line-through'>{{ number_format($product->default_price, 0, ',', ' ') }} ₽</span> {{number_format($product->price_student)}} ₽
-                </p>
+              @auth
+                  @if (auth()->user()->getRoles()->where('slug', 'graduate')->count() >= 0)
+                    <p class="mt-4 text-2xl font-bold text-red-600">
+                      <span class='text-[#5e5e5e] line-through'>{{ number_format($product->default_price, 0, ',', ' ') }} ₽</span> {{number_format($product->price_student)}} ₽
+                    </p>
+                  @else
+                    <p class="mt-4 text-4xl font-bold text-[#5e5e5e]">
+                      {{ number_format($product->default_price, 0, ',', ' ') }} ₽
+                    </p>
+                  @endif
+
               @else
-                <p class="mt-4 text-4xl font-bold text-[#5e5e5e]">
-                  {{ number_format($product->default_price, 0, ',', ' ') }} ₽
-                </p>
-              @endif
+                    <p class="mt-4 text-4xl font-bold text-[#5e5e5e]">
+                      {{ number_format($product->default_price, 0, ',', ' ') }} ₽
+                    </p>
+              @endauth
     
               <p class="pt-5 text-sm leading-5 text-gray-500">
                 {{ $product->description }}
@@ -94,12 +102,18 @@
                 </div>
               </div>
     
-              <div class="mt-7 flex flex-row items-center gap-6">
-                <a href="#"
-                      class="flex h-12 w-1/2 items-center justify-center bg-white text-[#5e5e5e] border border-[#5e5e5e] duration-300 hover:bg-[#ededed] hover:rounded"
-                  >
-                      В корзину
-                </a>
+              <div class="mt-7 flex flex-row gap-6">
+                @auth
+                    <a href="{{route('/cart-add', $product->id)}}" class="px-12 bg-white text-[#5e5e5e] border border-[#5e5e5e] duration-300 hover:bg-[#ededed] hover:rounded">
+                          В корзину
+                    </a>
+                @else
+                    <a href="{{route('login')}}"
+                      class="bg-white text-[#5e5e5e] border border-[#5e5e5e] duration-300 hover:bg-[#ededed] hover:rounded"
+                      >
+                          В корзину
+                    </a>
+                @endauth
                 <a href="#"
                       class="flex h-12 w-1/2 items-center justify-center bg-white text-[#5e5e5e] border border-[#5e5e5e] duration-300 hover:bg-[#ededed] hover:rounded"
                   >
@@ -139,6 +153,14 @@
             </div>
           </section>
 </x-guest-layout>
-<script>
-  UIkit.notification({message: 'Привет, мир!', status: 'primary'});
-</script>
+@if(session('success'))
+    <script>
+        Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Товар добавлен в корзину",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    </script>
+@endif

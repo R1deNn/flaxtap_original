@@ -15,6 +15,8 @@ use App\Orchid\Screens\Examples\ExampleGridScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\OrderEditScreen;
+use App\Orchid\Screens\OrdersScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
@@ -78,6 +80,19 @@ Route::screen('category/{category}/edit', CategoryEditScreen::class)
     ->breadcrumbs(fn (Trail $trail, $category) => $trail
         ->parent('platform.categorys')
         ->push($category->title, route('platform.shop.edit', $category)));
+
+// Platform > Orders
+Route::screen('/orders', OrdersScreen::class)
+    ->name('platform.orders')
+    ->breadcrumbs(function (Trail $trail) {
+        $trail->push(__('Заказы'), route('platform.orders'));
+    });
+
+// Platform > Orders > Order
+Route::screen('order/{order}/edit', OrderEditScreen::class)
+    ->name('platform.order.edit')
+    ->breadcrumbs(fn (Trail $trail, $order) => $trail
+        ->parent('platform.orders'));
 
 // Platform > Voblers
 Route::screen('/voblers', VoblersScreen::class)

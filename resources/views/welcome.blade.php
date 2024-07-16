@@ -1,3 +1,4 @@
+@section('title', 'Главная')
 <x-guest-layout>
     <section class="relative h-screen flex flex-col items-center justify-center text-center text-white ">
         <div class="video-docker absolute top-0 left-0 w-full h-full overflow-hidden">
@@ -76,7 +77,7 @@
         </div>
     </div>
     <section class="bg-[#d7d7d7]">
-        <div class="mx-auto w-full max-w-7xl px-5 md:px-10">
+        <div class="mx-auto w-full max-w-7xl px-5 md:px-10 py-6">
             <div class="text-center sm:p-10 md:p-16">
             <h2 class="mb-4 text-3xl text-[#5e5e5e] font-bold md:text-3xl">ПОДПИШИТЕСЬ НА НОВОСТИ И АКЦИИ</h2>
             <form name="email-form" method="get" class="relative mx-auto mb-4 flex w-full max-w-2xl flex-col items-start justify-center sm:flex-row">

@@ -33,6 +33,13 @@ Route::get('/dashboard-settings', [DashboardUserController::class, 'dashboard_se
 Route::get('/dashboard-logout', [DashboardUserController::class, 'logout'])->name('/dashboard-logout');
 
 Route::get('/cart', [CartController::class, 'index'])->name('/cart');
+Route::get('/cart-add/{id}', [CartController::class, 'add'])->name('/cart-add');
+Route::get('/cart-increment/{id}', [CartController::class, 'increment'])->name('/cart-increment');
+Route::get('/cart-decrement/{id}', [CartController::class, 'decrement'])->name('/cart-decrement');
+Route::get('/cart-delete/{id}', [CartController::class, 'delete'])->name('/cart-delete');
+
+Route::get('/checkout', [CartController::class, 'checkout'])->name('/checkout');
+Route::post('/checkout/store', [CartController::class, 'makeorder'])->name('/checkout/store');
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])

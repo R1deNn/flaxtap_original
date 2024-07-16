@@ -27,6 +27,8 @@ class ShopFactory extends Factory
     public function definition(): array
     {
         return [
+            'id_category' => fake()->numberBetween(1, 5),
+            'id_vobler' => fake()->numberBetween(0,2),
             'title' => fake()->name(),
             'description' => fake()->realText(100),
             'default_price' => fake()->numberBetween(500, 5000),

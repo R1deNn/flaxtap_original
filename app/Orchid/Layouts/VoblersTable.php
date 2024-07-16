@@ -52,7 +52,7 @@ class VoblersTable extends Table
             ->align(TD::ALIGN_CENTER)
             ->cantHide(),
 
-            TD::make('title', __('Название'))->render(function ($vobler) {
+            TD::make('title', __('Предпросмотр'))->render(function ($vobler) {
                 return Button::make($vobler->title)
                     ->style('background-color: ' . $vobler->background_color . '; color: ' . $vobler->color)
                     ->render();
