@@ -87,69 +87,98 @@
                                 <div
                                     class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg">
     
-                                    <div class="bg-white overflow-hidden shadow rounded-lg border">
-                                        <div class="px-4 py-5 sm:px-6">
-                                            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                                Ваш профиль
-                                            </h3>
-                                            <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                                                Немного информации о вашем аккаунте
-                                            </p>
-                                        </div>
-                                        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
-                                            <dl class="sm:divide-y sm:divide-gray-200">
-                                                <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt class="text-sm font-medium text-gray-500">
-                                                        ФИО
-                                                    </dt>
-                                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        {{auth()->user()->fio}}
-                                                    </dd>
-                                                </div>
-                                                <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt class="text-sm font-medium text-gray-500">
-                                                        Почтовый адрес
-                                                    </dt>
-                                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        {{auth()->user()->email}}
-                                                    </dd>
-                                                </div>
-                                                <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt class="text-sm font-medium text-gray-500">
-                                                        Номер телефона
-                                                    </dt>
-                                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        {{auth()->user()->tel}}
-                                                    </dd>
-                                                </div>
-                                                <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt class="text-sm font-medium text-gray-500">
-                                                        Статус
-                                                    </dt>
-                                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        @if (auth()->user()->getRoles()->where('slug', 'admin')->count() > 0)
-                                                            Администратор
-    
-                                                        @elseif (auth()->user()->getRoles()->where('slug', 'graduate')->count() > 0)
-                                                            Выпускник
-                                                        @else
-                                                            Пользователь
+                                    <table class="min-w-full">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                                    ID
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                                    Статус
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                                    Сумма
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                                    Дата
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white">
+                                            @foreach($orders as $order)
+                                            <tr data-order-id="{{$order->id}}" class="order-row">
+                                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                    <div class="text-sm leading-5 text-gray-900">{{$order->id}}</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                    <div class="text-sm leading-5 text-gray-900">
+                                                        @if($order->status == 0)
+                                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">В ожидании</span>
+                                                        @elseif($order->status == 1)
+                                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">В обработке</span>
+                                                        @elseif($order->status == 2)
+                                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-300 text-yellow-800">Идет доставка</span>
+                                                        @elseif($order->status == 3)
+                                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Выполнен</span>
+                                                        @elseif($order->status == 4)
+                                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-black text-white">Отменен</span>
                                                         @endif
-                                                    </dd>
-                                                </div>
-                                            </dl>
-                                        </div>
-    
-                                        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
-                                            <dl class="sm:divide-y sm:divide-gray-200">
-                                                <div class="py-4 sm:py-5 sm:px-4">
-                                                    <a class="text-center border-[#5e5e5e] border-2 py-4 px-8 rounded text-[#5e5e5e] hover:bg-[#5e5e5e] hover:text-[#ffffff] duration-300" href="#">Настройки</a>
-                                                </div>
-                                            </dl>
-                                        </div>
-    
-                                    </div>
-    
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                    <div class="text-sm leading-5 text-gray-900">{{ number_format($order->price, 0, '', ' ') }} ₽</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                    <div class="text-sm leading-5 text-gray-900">{{date('d-m-Y H:i', strtotime($order->created_at))}}</div>
+                                                </td>
+                                            </tr>
+                                            <tr class="order-row" data-order-id="{{$order->id}}">
+                                                <td colspan="4" class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                    <div class="text-sm leading-5 text-gray-900 order-details" data-order-id="{{$order->id}}" style="display: none; width: 100%;">
+                                                        <table style="width: 100%;">
+                                                            <thead>
+                                                                <tr style="text-center">
+                                                                    <th>Изображение</th>
+                                                                    <th>Название</th>
+                                                                    <th>Цена</th>
+                                                                    <th>Количество</th>
+                                                                    <th>Ссылка</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach($order->OrderDetails as $orderDetail)
+                                                                    @foreach($orderDetail->shop as $product)
+                                                                        <tr class="text-center">
+                                                                            <td>
+                                                                                <img src="{{$product->image}}" alt="{{$product->title}}" style="width: 100px; height: 100px" class="object-center object-cover">
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="text-sm text-gray-900">{{$product->title}}</div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="text-sm text-gray-900">{{ number_format($product->default_price, 0, '', ' ') }} ₽</div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="text-sm text-gray-900">{{$orderDetail->amount}}</div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="text-sm text-gray-900"><a href="{{route('/shop/show/{id}', $product->id)}}" target="_blank">Перейти</a></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -158,4 +187,23 @@
             </div>
         </div>
     </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orderRows = document.querySelectorAll('.order-row');
+
+    orderRows.forEach(row => {
+        row.addEventListener('click', function() {
+            const orderId = this.dataset.orderId;
+            const orderDetails = document.querySelector(`.order-details[data-order-id="${orderId}"]`);
+
+            if (orderDetails.style.display === 'none') {
+                orderDetails.style.display = 'table-row';
+                orderDetails.style.width = '100%';
+            } else {
+                orderDetails.style.display = 'none';
+            }
+        });
+    });
+});  
+</script>
 </x-guest-layout>    

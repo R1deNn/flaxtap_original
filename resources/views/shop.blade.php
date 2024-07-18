@@ -83,22 +83,27 @@
                   </a>
                 </h3>
                 <div class="flex-1 flex flex-col justify-end"> 
-                  <p class="text-sm italic text-gray-500">{{$product->category->title}}</p>
+                  <p class="text-sm italic text-gray-500">
+                    @if(isset($product->category->title))
+                      {{ $product->category->title }}
+                    @endif
+                  </p>
                   @auth
                       @if (auth()->user()->getRoles()->where('slug', 'graduate')->count() <= 0)
                       <p class="mt-4 text-2xl font-bold text-red-600">
                         <p class="text-base font-medium text-gray-900">{{ number_format($product->default_price, 0, '', ' ') }} ₽</p>
                       </p>
                     @endif
-                    @if (auth()->user()->getRoles()->where('slug', 'graduate')->count() > 0)
+                    @if (auth()->user()->getRoles()->where('slug', 'graduate')->count() >= 0)
                       <p class="mt-4 text-2xl font-bold text-red-600">
                         <p class="text-base font-medium text-gray-900">Для вас: {{ number_format($product->price_student, 0, '', ' ') }} ₽</p>
                       </p>
                     @endif
-                  @endauth
+                  @else
                   <p class="mt-4 text-2xl font-bold text-red-600">
                     <p class="text-base font-medium text-gray-900">{{ number_format($product->default_price, 0, '', ' ') }} ₽</p>
                   </p>
+                  @endauth
                 </div>
               </div>
             </div>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Like;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 
@@ -29,8 +31,19 @@ class ShopController extends Controller
 
     public function show($id)
     {
+        if(auth()->user() != null){
+            $likeStatus = Like::where('user_id', auth()->user()->id)->where('product_id', $id)->exists();
+            $cartStatus = Cart::where('id_user', auth()->user()->id)->where('id_product', $id)->exists();
+        } else {
+            $likeStatus = false;
+            $cartStatus = false;
+        }
+
         return view('current-product', [
-            'product' => Shop::where('id', $id)->first()
+            'product' => Shop::where('id', $id)->first(),
+            'random_products' => Shop::inRandomOrder()->limit(3)->get(),
+            'likeStatus' => $likeStatus,
+            'cartStatus' => $cartStatus,
         ]);
     }
 

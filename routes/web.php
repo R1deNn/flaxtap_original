@@ -13,7 +13,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardUserController;
+use App\Http\Controllers\LikesController;
 use App\Http\Controllers\WelcomeController;
+use App\Models\Like;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('/home');
 
@@ -26,20 +28,24 @@ Route::get('/shop/show/{id}', [ShopController::class, 'show'])->name('/shop/show
 
 Route::get('/dashboard', function () {
         return view('dashboard');
-    })->name('dashboard');
+    })->name('dashboard')->middleware('auth');
 
-Route::get('/dashboard-your-orders', [DashboardUserController::class, 'your_orders'])->name('/dashboard-your-orders');
-Route::get('/dashboard-settings', [DashboardUserController::class, 'dashboard_settings'])->name('/dashboard-settings');
-Route::get('/dashboard-logout', [DashboardUserController::class, 'logout'])->name('/dashboard-logout');
+Route::get('/dashboard-your-orders', [DashboardUserController::class, 'your_orders'])->name('/dashboard-your-orders')->middleware('auth');
+Route::get('/dashboard-settings', [DashboardUserController::class, 'dashboard_settings'])->name('/dashboard-settings')->middleware('auth');
+Route::get('/dashboard-logout', [DashboardUserController::class, 'logout'])->name('/dashboard-logout')->middleware('auth');
 
-Route::get('/cart', [CartController::class, 'index'])->name('/cart');
+Route::get('/cart', [CartController::class, 'index'])->name('/cart')->middleware('auth');
 Route::get('/cart-add/{id}', [CartController::class, 'add'])->name('/cart-add');
-Route::get('/cart-increment/{id}', [CartController::class, 'increment'])->name('/cart-increment');
-Route::get('/cart-decrement/{id}', [CartController::class, 'decrement'])->name('/cart-decrement');
-Route::get('/cart-delete/{id}', [CartController::class, 'delete'])->name('/cart-delete');
+Route::get('/cart-increment/{id}', [CartController::class, 'increment'])->name('/cart-increment')->middleware('auth');
+Route::get('/cart-decrement/{id}', [CartController::class, 'decrement'])->name('/cart-decrement')->middleware('auth');
+Route::get('/cart-delete/{id}', [CartController::class, 'delete'])->name('/cart-delete')->middleware('auth');
 
-Route::get('/checkout', [CartController::class, 'checkout'])->name('/checkout');
-Route::post('/checkout/store', [CartController::class, 'makeorder'])->name('/checkout/store');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('/checkout')->middleware('auth');
+Route::post('/checkout/store', [CartController::class, 'makeorder'])->name('/checkout/store')->middleware('auth');
+
+Route::get('/your-likes', [LikesController::class, 'index'])->name('/your-likes')->middleware('auth')->middleware('auth');
+Route::post('/shop/like/{id_product}/{id_user}', [LikesController::class, 'like'])->name('/shop/like/{id_product}/{id_user}')->middleware('auth');
+Route::post('/shop/dislike/{id_product}/{id_user}', [LikesController::class, 'dislike'])->name('/shop/dislike/{id_product}/{id_user}')->middleware('auth');
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])

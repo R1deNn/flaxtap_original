@@ -2,18 +2,16 @@
 
 namespace App\Orchid\Layouts;
 
-use Orchid\Screen\Field;
 use Orchid\Screen\Layouts\Chart;
-use Orchid\Screen\Layouts\Rows;
 
-class WelcomeRowsLayout extends Chart
+class WelcomeShopsRows extends Chart
 {
     /**
      * Add a title to the Chart.
      * 
      * @var string
      */
-    protected $title = 'Всего пользователей';
+    protected $title = 'Всего товаров';
     protected $description = 'Удобный график, в котором показана динамика за месяц';
 
     /**
@@ -37,5 +35,5 @@ class WelcomeRowsLayout extends Chart
      *
      * @var string
      */
-    protected $target = 'users';
+    protected $target = 'products';
 }

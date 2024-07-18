@@ -5,7 +5,9 @@ namespace App\Orchid\Screens;
 use App\Models\Order;
 use App\Orchid\Layouts\OrdersTable;
 use Illuminate\Http\Request;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 
 class OrdersScreen extends Screen
@@ -35,7 +37,7 @@ class OrdersScreen extends Screen
 
     public function description(): string
     {
-        return 'Здесь находятся заказы, которые совершили пользователи';
+        return "Здесь находятся заказы, которые совершили пользователи. Цвета статусов: ";
     }
 
     /**
@@ -57,6 +59,11 @@ class OrdersScreen extends Screen
     {
         return [
             OrdersTable::class,
+            Layout::modal('exampleModal', [
+                Layout::rows([
+                    
+                ]),
+            ])->size(Modal::SIZE_LG)->closeButton('Закрыть')->withoutApplyButton()->title('Подробнее о заказе'),
         ];
     }
 

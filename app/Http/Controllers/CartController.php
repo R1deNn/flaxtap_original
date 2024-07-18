@@ -140,7 +140,7 @@ class CartController extends Controller
             $cart->delete();
         }
     
-        return back()->with('success', 'ok');
+        return back()->with('deleted', 'ok');
     }
 
     public function checkout(Request $request){

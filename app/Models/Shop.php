@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Orchid\Attachment\Attachable;
+use Orchid\Metrics\Chartable;
 
 class Shop extends Model
 {
-    use HasFactory, AsSource, Attachable;
+    use HasFactory, AsSource, Attachable, Chartable;
 
     protected $fillable = [
         'id_category',

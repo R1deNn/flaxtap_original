@@ -93,7 +93,13 @@
                                 <div>
                                     <a href="{{route('/shop/show/{id}', $product->id)}}" class="text-lg font-semibold leading-tight text-gray-900 hover:underline">{{$product->title}}</a>
                                     <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">{{$product->description}}</p>
-                                    <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">{{$product->category->title}}</p>
+                                    <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                                        @if(isset($product->category->title))
+                                            {{ $product->category->title }}
+                                        @else
+                                            Нет категории
+                                        @endif
+                                    </p>
                                 </div>
                                 <div>
                                     <p class="text-base font-bold text-gray-900 dark:text-white">

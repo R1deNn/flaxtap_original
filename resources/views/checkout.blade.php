@@ -20,7 +20,11 @@
                     <img src="{{$item->product->image}}" alt="Front of zip tote bag with white canvas, white handles, and black drawstring top." class="flex-none w-20 h-20 rounded-md object-center object-cover">
                     <div class="flex-auto space-y-1">
                     <h3 class="text-black">{{$item->product->title}}</h3>
-                    <p>{{$item->product->category->title}}</p>
+                    <p>
+                      @if(isset($item->product->category->title))
+                        {{ $item->product->category->title }}
+                      @endif
+                    </p>
                     <p>{{$item->amount}} шт.</p>
                     </div>
                     <p class="flex-none text-base font-medium text-black">

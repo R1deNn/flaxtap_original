@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
+use App\Models\Order;
+use App\Models\Shop;
+use App\Models\User;
+use App\Orchid\Layouts\WelcomeOrdersRows;
 use App\Orchid\Layouts\WelcomeRowsLayout;
+use App\Orchid\Layouts\WelcomeShopsRows;
+use App\Orchid\Layouts\WelcomeSumRows;
+use Carbon\Carbon;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 
@@ -18,12 +25,14 @@ class PlatformScreen extends Screen
     public function query(): iterable
     {
         return [
-            'charts' => [
-                [
-                    'name'   => 'Some Data',
-                    'values' => [25, 40, 30, 35, 8, 52, 17],
-                    'labels' => ['12am-3am', '3am-6am', '6am-9am', '9am-12pm', '12pm-3pm', '3pm-6pm', '6pm-9pm'],
-                ],
+            'users' => [
+                User::countByDays()->toChart('Пользователей'),
+            ],
+            'orders' => [
+                Order::countByDays()->toChart('Заказов'),
+            ],
+            'products' => [
+                Shop::countByDays()->toChart('Товаров'),
             ],
         ];
     }
@@ -71,6 +80,8 @@ class PlatformScreen extends Screen
         return [
             Layout::view('platform::partials.update-assets'),
             WelcomeRowsLayout::class,
+            WelcomeOrdersRows::class,
+            WelcomeShopsRows::class,
         ];
     }
 }
